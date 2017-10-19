@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Test</title>
+	<style>
+	* { padding: 0; margin: 0; }
+	canvas { background: #eee; display: block; margin: 0 auto; }
+</style>
+</head>
+<body onload="gameLoop();">
+	<canvas id="canvas" width="400" height="400"></canvas>
+	<script type="text/javascript">
+
+		const canvas = document.getElementById('canvas');
+		const ctx = canvas.getContext('2d');
+		let startColor = 100000;
+
+		function gameLoop() {
+
+			ctx.fillStyle = '#' + startColor;
+			
+			for(let i=0;i<6;i++) {
+				for(let j=0;j<6;j++) {
+					
+					ctx.beginPath();
+					ctx.arc(i*50+50, j*50+50, 20, 0, 6.28319, 1);
+					ctx.fill();
+				}
+			}
+			
+			startColor++;
+			window.requestAnimationFrame(gameLoop);
+		}
+		
+
+	</script>
+</body>
+</html>
