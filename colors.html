@@ -13,26 +13,28 @@
 
 		const canvas = document.getElementById('canvas');
 		const ctx = canvas.getContext('2d');
-		let startColor = 100000;
+		var r = 0;
+		let g = 0;
+		let b = 0;
 
 		function gameLoop() {
 
-			ctx.fillStyle = '#' + startColor;
+			ctx.fillStyle = 'rgb('+r+','+g+','+b+')';
 			
-			for(let i=0;i<6;i++) {
-				for(let j=0;j<6;j++) {
+			for(let i=0;i<7;i++) {
+				for(let j=0;j<7;j++) {
 					
 					ctx.beginPath();
-					ctx.arc(i*50+50, j*50+50, 20, 0, 6.28319, 1);
+					ctx.arc(i*50+50, j*50+50, 10, 0, 6.28319, 1);
 					ctx.fill();
 				}
 			}
-			
-			startColor++;
+			r++;
+			//g++;
+			//b++;
+			console.log(r);
 			window.requestAnimationFrame(gameLoop);
 		}
-		
-
 	</script>
 </body>
 </html>
