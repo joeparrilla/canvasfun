@@ -15,16 +15,22 @@
 
 		const canvas = document.getElementById('canvas');
 		const ctx = canvas.getContext('2d');
+		const MAP = [[1,1,1,1,0,1,1,1,1,1],
+					 [1,1,1,1,0,1,1,1,1,1],
+					 [1,1,1,1,0,1,1,1,1,1],
+					 [1,1,1,1,0,1,1,1,1,1],
+					 [1,1,1,1,'S',1,1,1,1,1]];
+		const BLOCK_SIZE = 15;
 		let upPressed = false;
 		let downPressed = false;
 		let rightPressed = false;
 		let leftPressed = false;
 
 		let player = new function() {
-			this.size = 10;
-			this.x = canvas.width/2;
-			this.y = (canvas.height)-this.size;
-			this.draw = function(ctx) { ctx.fillRect(this.x,this.y,this.size,this.size) };
+			this.size = BLOCK_SIZE;
+			this.x;
+			this.y;
+			this.draw = function(ctx) {ctx.fillRect(this.x,this.y,this.size,this.size) };
 			this.move = function(dx,dy) {this.x+=dx; this.y+=dy};
 		};
 
@@ -43,8 +49,33 @@
 			}
 		}
 
+		function drawMap() {
+			let x = 0;
+			let y = 0;
+			for(var i=0; i<MAP.length;i++) {
+				for(var j=0; j<MAP[i].length;j++) {
+					if(MAP[i][j] === 1) {
+						ctx.fillRect(x,y,BLOCK_SIZE,BLOCK_SIZE);
+						x+=BLOCK_SIZE;
+					}
+					else if(MAP[i][j] === 'S') {
+						player.x = x;
+						player.y = y;
+						x+=BLOCK_SIZE;
+					}
+					else {
+						x+=BLOCK_SIZE;
+					}
+				}
+				x=0;
+				y+=BLOCK_SIZE;
+			}
+		}
+
+		drawMap();
+
 		function gameLoop() {
-			ctx.clearRect(0,0,canvas.width,canvas.height);
+			ctx.clearRect(player.x,player.y,BLOCK_SIZE,BLOCK_SIZE); //only clear player
 			getInput();
 			ctx.fillStyle = '#000000';
 			player.draw(ctx);
