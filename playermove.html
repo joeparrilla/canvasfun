@@ -19,7 +19,7 @@
 			var file = this.files[0];
 			var reader = new FileReader();
 			reader.onload = function(e) {
-				let newMap = readMap(e.target.result);
+				let map = readMap(e.target.result);
 			}
 			reader.readAsText(file);
 		}, false);
@@ -27,23 +27,6 @@
 
 		const canvas = document.getElementById('canvas');
 		const ctx = canvas.getContext('2d');
-		const MAP = [[1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
-		[1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
-		[1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
-		[1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
-		[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-		[1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
-		[1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
-		[1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
-		[1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
-		[1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
-		[1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
-		[1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
-		[1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
-		[1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
-		[1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
-		[1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
-		[1,1,1,1,'S',1,1,1,1,1,1,1,1,1,1]];
 		const BLOCK_SIZE = 15;
 		const PLAYER_SIZE = 10;
 		let upPressed = false;
@@ -66,9 +49,9 @@
 			let rightOk = true;
 			let upOk = true;
 			let downOk = true;
-			for(var i=0; i<MAP.length;i++) {
-				for(var j=0; j<MAP[i].length;j++) {
-					if(MAP[i][j] === 1) {
+			for(var i=0; i<map.length;i++) {
+				for(var j=0; j<map[i].length;j++) {
+					if(map[i][j] === 1) {
 						//check left
 						if(x+BLOCK_SIZE == player.x && y+BLOCK_SIZE>player.y && y<player.y+PLAYER_SIZE) {
 							leftOk = false;
@@ -109,18 +92,18 @@
 		function drawMap() {
 			let x = 0;
 			let y = 0;
-			for(var i=0; i<MAP.length;i++) {
-				for(var j=0; j<MAP[i].length;j++) {
-					if(MAP[i][j] === 1) {
+			for(var i=0; i<map.length;i++) {
+				for(var j=0; j<map[i].length;j++) {
+					if(map[i][j] === 1) {
 						ctx.fillRect(x,y,BLOCK_SIZE,BLOCK_SIZE);
 						x+=BLOCK_SIZE;
 					}
-					else if(MAP[i][j] === 'S') {
+					else if(map[i][j] === 2) {
 						player.x = x;
 						player.y = y;
 						x+=BLOCK_SIZE;
 					}
-					else {
+					else if(map[i][j] === 0) {
 						x+=BLOCK_SIZE;
 					}
 				}
