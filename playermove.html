@@ -7,11 +7,23 @@
 	canvas { background: #eee; display: block; margin: 0 auto; }
 </style>
 <script type="text/javascript" src="keyHandlers.js" ></script>
+<script type="text/javascript" src="mapReader.js" ></script>
 </head>
 <body onload="gameLoop();">
 	<canvas id="canvas" width="400" height="400"></canvas>
+	<input type="file" id="input">
 
 	<script type="text/javascript">
+
+		document.getElementById('input').addEventListener('change', function() {
+			var file = this.files[0];
+			var reader = new FileReader();
+			reader.onload = function(e) {
+				let newMap = readMap(e.target.result);
+			}
+			reader.readAsText(file);
+		}, false);
+
 
 		const canvas = document.getElementById('canvas');
 		const ctx = canvas.getContext('2d');
@@ -58,9 +70,20 @@
 				for(var j=0; j<MAP[i].length;j++) {
 					if(MAP[i][j] === 1) {
 						//check left
-						if(x+BLOCK_SIZE == player.x && y+BLOCK_SIZE>=player.y && y<=player.y+PLAYER_SIZE) {
+						if(x+BLOCK_SIZE == player.x && y+BLOCK_SIZE>player.y && y<player.y+PLAYER_SIZE) {
 							leftOk = false;
-							console.log(`x=${x},y=${y},px=${player.x},py=${player.y}`);
+						}
+						//check right
+						if(x == player.x+PLAYER_SIZE && y+BLOCK_SIZE>player.y && y<player.y+PLAYER_SIZE) {
+							rightOk = false;
+						}
+						//check up
+						if(y+BLOCK_SIZE == player.y && x+BLOCK_SIZE>player.x && x<player.x+PLAYER_SIZE) {
+							upOk = false;
+						}
+						//check down
+						if(y == player.y+PLAYER_SIZE && x+BLOCK_SIZE>player.x && x<player.x+PLAYER_SIZE) {
+							downOk = false;
 						}
 					}
 					x+=BLOCK_SIZE;
@@ -68,7 +91,6 @@
 				x=0;
 				y+=BLOCK_SIZE;
 			}
-			console.log(leftOk);
 
 			if(upPressed && upOk) {
 				player.move(0,-1);
