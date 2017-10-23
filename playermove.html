@@ -16,30 +16,31 @@
 		const canvas = document.getElementById('canvas');
 		const ctx = canvas.getContext('2d');
 		const MAP = [[1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
-					 [1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
-					 [1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
-					 [1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
-					 [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-					 [1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
-					 [1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
-					 [1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
-					 [1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
-					 [1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
-					 [1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
-					 [1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
-					 [1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
-					 [1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
-					 [1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
-					 [1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
-					 [1,1,1,1,'S',1,1,1,1,1,1,1,1,1,1]];
+		[1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
+		[1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
+		[1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
+		[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+		[1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
+		[1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
+		[1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
+		[1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
+		[1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
+		[1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
+		[1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
+		[1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
+		[1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
+		[1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
+		[1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
+		[1,1,1,1,'S',1,1,1,1,1,1,1,1,1,1]];
 		const BLOCK_SIZE = 15;
+		const PLAYER_SIZE = 10;
 		let upPressed = false;
 		let downPressed = false;
 		let rightPressed = false;
 		let leftPressed = false;
 
 		let player = new function() {
-			this.size = BLOCK_SIZE;
+			this.size = PLAYER_SIZE;
 			this.x;
 			this.y;
 			this.draw = function(ctx) {ctx.fillRect(this.x,this.y,this.size,this.size) };
@@ -47,16 +48,38 @@
 		};
 
 		function getInput() {
-			if(upPressed) {
+			let x = 0;
+			let y = 0;
+			let leftOk = true;
+			let rightOk = true;
+			let upOk = true;
+			let downOk = true;
+			for(var i=0; i<MAP.length;i++) {
+				for(var j=0; j<MAP[i].length;j++) {
+					if(MAP[i][j] === 1) {
+						//check left
+						if(x+BLOCK_SIZE == player.x && y+BLOCK_SIZE>=player.y && y<=player.y+PLAYER_SIZE) {
+							leftOk = false;
+							console.log(`x=${x},y=${y},px=${player.x},py=${player.y}`);
+						}
+					}
+					x+=BLOCK_SIZE;
+				}
+				x=0;
+				y+=BLOCK_SIZE;
+			}
+			console.log(leftOk);
+
+			if(upPressed && upOk) {
 				player.move(0,-1);
 			}
-			else if(downPressed) {
+			else if(downPressed && downOk) {
 				player.move(0,1);
 			}
-			else if(leftPressed) {
+			else if(leftPressed && leftOk) {
 				player.move(-1,0);
 			}
-			else if(rightPressed) {
+			else if(rightPressed && rightOk) {
 				player.move(1,0);
 			}
 		}
@@ -87,7 +110,7 @@
 		drawMap();
 
 		function gameLoop() {
-			ctx.clearRect(player.x,player.y,BLOCK_SIZE,BLOCK_SIZE); //only clear player
+			ctx.clearRect(player.x,player.y,PLAYER_SIZE,PLAYER_SIZE); //only clear player
 			getInput();
 			ctx.fillStyle = '#000000';
 			player.draw(ctx);
