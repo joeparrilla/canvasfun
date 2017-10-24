@@ -9,31 +9,21 @@
 <script type="text/javascript" src="keyHandlers.js" ></script>
 <script type="text/javascript" src="mapReader.js" ></script>
 </head>
-<body onload="gameLoop();">
+<body>
 	<canvas id="canvas" width="400" height="400"></canvas>
 	<input type="file" id="input">
 
 	<script type="text/javascript">
 
-		document.getElementById('input').addEventListener('change', function() {
-			var file = this.files[0];
-			var reader = new FileReader();
-			reader.onload = function(e) {
-				let map = readMap(e.target.result);
-			}
-			reader.readAsText(file);
-		}, false);
-
-
 		const canvas = document.getElementById('canvas');
 		const ctx = canvas.getContext('2d');
 		const BLOCK_SIZE = 15;
 		const PLAYER_SIZE = 10;
+		var map;
 		let upPressed = false;
 		let downPressed = false;
 		let rightPressed = false;
 		let leftPressed = false;
-
 		let player = new function() {
 			this.size = PLAYER_SIZE;
 			this.x;
@@ -41,6 +31,17 @@
 			this.draw = function(ctx) {ctx.fillRect(this.x,this.y,this.size,this.size) };
 			this.move = function(dx,dy) {this.x+=dx; this.y+=dy};
 		};
+
+		document.getElementById('input').addEventListener('change', function() {
+			var file = this.files[0];
+			var reader = new FileReader();
+			reader.onload = function(e) {
+			 	map = readMap(e.target.result);
+				drawMap();
+				gameLoop();
+			}
+			reader.readAsText(file);
+		}, false);
 
 		function getInput() {
 			let x = 0;
@@ -112,14 +113,12 @@
 			}
 		}
 
-		drawMap();
-
 		function gameLoop() {
-			ctx.clearRect(player.x,player.y,PLAYER_SIZE,PLAYER_SIZE); //only clear player
-			getInput();
-			ctx.fillStyle = '#000000';
-			player.draw(ctx);
-			window.requestAnimationFrame(gameLoop);
+				ctx.clearRect(player.x,player.y,PLAYER_SIZE,PLAYER_SIZE); //only clear player
+				getInput();
+				ctx.fillStyle = '#000000';
+				player.draw(ctx);
+				window.requestAnimationFrame(gameLoop);
 		}
 	</script>
 </body>
