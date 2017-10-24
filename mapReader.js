@@ -13,7 +13,10 @@ function readMap(inputMapText) {
 				 	map[row][column] = 0;
 				 	break;
 				case 'S':
-					map[row][column] = 2
+					map[row][column] = 2;
+					break;
+				case 'E':
+					map[row][column] = 3;
 			}
 
 			column++;

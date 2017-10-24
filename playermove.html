@@ -10,26 +10,38 @@
 <script type="text/javascript" src="mapReader.js" ></script>
 </head>
 <body>
-	<canvas id="canvas" width="400" height="400"></canvas>
+	<canvas id="canvas" width="800" height="800"></canvas>
+	<img id="playerIcon" src="https://drive.google.com/uc?export=download&id=0B6m_DKCEaizGTjdDRHBneldqVWM" hidden="true">
 	<input type="file" id="input">
 
 	<script type="text/javascript">
 
 		const canvas = document.getElementById('canvas');
 		const ctx = canvas.getContext('2d');
-		const BLOCK_SIZE = 15;
-		const PLAYER_SIZE = 10;
+		const BLOCK_SIZE = 25;
+		const PLAYER_SIZE = 20;
+		const GOAL_SIZE = 20;
 		var map;
-		let upPressed = false;
-		let downPressed = false;
-		let rightPressed = false;
-		let leftPressed = false;
+		var upPressed = false;
+		var downPressed = false;
+		var rightPressed = false;
+		var leftPressed = false;
+		var win = false;
+		var playerIcon = document.getElementById('playerIcon');
 		let player = new function() {
 			this.size = PLAYER_SIZE;
 			this.x;
 			this.y;
-			this.draw = function(ctx) {ctx.fillRect(this.x,this.y,this.size,this.size) };
+			//this.draw = function(ctx) {ctx.fillRect(this.x,this.y,this.size,this.size) };
+			this.draw = function(ctx) {ctx.drawImage(playerIcon,this.x,this.y)};
 			this.move = function(dx,dy) {this.x+=dx; this.y+=dy};
+		};
+
+		let goal = new function() {
+			this.size = GOAL_SIZE;
+			this.x;
+			this.y;
+			this.draw = function(ctx) {ctx.fillRect(this.x,this.y,this.size,this.size) };
 		};
 
 		document.getElementById('input').addEventListener('change', function() {
@@ -58,6 +70,11 @@
 						x+=BLOCK_SIZE;
 					}
 					else if(map[i][j] === 0) {
+						x+=BLOCK_SIZE;
+					}
+					else if(map[i][j] === 3) {
+						goal.x = x;
+						goal.y = y;
 						x+=BLOCK_SIZE;
 					}
 				}
@@ -116,11 +133,12 @@
 		}
 
 		function gameLoop() {
-				ctx.clearRect(player.x,player.y,PLAYER_SIZE,PLAYER_SIZE); //only clear player
-				getInput();
-				ctx.fillStyle = '#000000';
-				player.draw(ctx);
-				window.requestAnimationFrame(gameLoop);
+			ctx.clearRect(player.x,player.y,PLAYER_SIZE,PLAYER_SIZE); //only clear player
+			getInput();
+			ctx.fillStyle = '#000000';
+			player.draw(ctx);
+			goal.draw(ctx);
+			window.requestAnimationFrame(gameLoop);
 		}
 	</script>
 </body>
