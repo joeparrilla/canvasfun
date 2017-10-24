@@ -43,13 +43,38 @@
 			reader.readAsText(file);
 		}, false);
 
-		function getInput() {
+		function drawMap() {
 			let x = 0;
 			let y = 0;
+			for(var i=0; i<map.length;i++) {
+				for(var j=0; j<map[i].length;j++) {
+					if(map[i][j] === 1) {
+						ctx.fillRect(x,y,BLOCK_SIZE,BLOCK_SIZE);
+						x+=BLOCK_SIZE;
+					}
+					else if(map[i][j] === 2) {
+						player.x = x;
+						player.y = y;
+						x+=BLOCK_SIZE;
+					}
+					else if(map[i][j] === 0) {
+						x+=BLOCK_SIZE;
+					}
+				}
+				x=0;
+				y+=BLOCK_SIZE;
+			}
+		}
+
+		function getInput() {
 			let leftOk = true;
 			let rightOk = true;
 			let upOk = true;
 			let downOk = true;
+
+			let x = 0;
+			let y = 0;
+
 			for(var i=0; i<map.length;i++) {
 				for(var j=0; j<map[i].length;j++) {
 					if(map[i][j] === 1) {
@@ -87,29 +112,6 @@
 			}
 			else if(rightPressed && rightOk) {
 				player.move(1,0);
-			}
-		}
-
-		function drawMap() {
-			let x = 0;
-			let y = 0;
-			for(var i=0; i<map.length;i++) {
-				for(var j=0; j<map[i].length;j++) {
-					if(map[i][j] === 1) {
-						ctx.fillRect(x,y,BLOCK_SIZE,BLOCK_SIZE);
-						x+=BLOCK_SIZE;
-					}
-					else if(map[i][j] === 2) {
-						player.x = x;
-						player.y = y;
-						x+=BLOCK_SIZE;
-					}
-					else if(map[i][j] === 0) {
-						x+=BLOCK_SIZE;
-					}
-				}
-				x=0;
-				y+=BLOCK_SIZE;
 			}
 		}
 
