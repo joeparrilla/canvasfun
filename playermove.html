@@ -32,7 +32,6 @@
 			this.size = PLAYER_SIZE;
 			this.x;
 			this.y;
-			//this.draw = function(ctx) {ctx.fillRect(this.x,this.y,this.size,this.size) };
 			this.draw = function(ctx) {ctx.drawImage(playerIcon,this.x,this.y)};
 			this.move = function(dx,dy) {this.x+=dx; this.y+=dy};
 		};
@@ -41,7 +40,7 @@
 			this.size = GOAL_SIZE;
 			this.x;
 			this.y;
-			this.draw = function(ctx) {ctx.fillRect(this.x,this.y,this.size,this.size) };
+			this.draw = function(ctx) {ctx.drawImage(playerIcon,this.x,this.y)};
 		};
 
 		document.getElementById('input').addEventListener('change', function() {
@@ -110,6 +109,24 @@
 						//check down
 						if(y == player.y+PLAYER_SIZE && x+BLOCK_SIZE>player.x && x<player.x+PLAYER_SIZE) {
 							downOk = false;
+						}
+					}
+					else if(map[i][j] === 3) {
+						//check left
+						if(x+BLOCK_SIZE == player.x && y+BLOCK_SIZE>player.y && y<player.y+PLAYER_SIZE) {
+							alert("You Win!");
+						}
+						//check right
+						if(x == player.x+PLAYER_SIZE && y+BLOCK_SIZE>player.y && y<player.y+PLAYER_SIZE) {
+							alert("You Win!");
+						}
+						//check up
+						if(y+BLOCK_SIZE == player.y && x+BLOCK_SIZE>player.x && x<player.x+PLAYER_SIZE) {
+							alert("You Win!");
+						}
+						//check down
+						if(y == player.y+PLAYER_SIZE && x+BLOCK_SIZE>player.x && x<player.x+PLAYER_SIZE) {
+							alert("You Win!");
 						}
 					}
 					x+=BLOCK_SIZE;

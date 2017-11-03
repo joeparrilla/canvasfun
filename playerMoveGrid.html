@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Test</title>
+	<style>
+	* { padding: 0; margin: 0; }
+	canvas { background: #eee; display: block; margin: 0 auto; }
+</style>
+<script type="text/javascript" src="keyHandlers.js" ></script>
+<script type="text/javascript" src="mapReader.js" ></script>
+<script type="text/javascript" src="helpers.js" ></script>
+</head>
+<body>
+	<canvas id="canvas" width="800" height="800"></canvas>
+	<img id="playerIcon" src="https://drive.google.com/uc?export=download&id=0B6m_DKCEaizGTjdDRHBneldqVWM" hidden="true">
+	<img id="enemyIcon" src="https://drive.google.com/uc?export=download&id=1I3wC6wVngPLX6FngY1vIkdJVPqGGpZP_" hidden="true">
+	<input type="file" id="input">
+
+	<script type="text/javascript">
+
+		const canvas       = document.getElementById('canvas');
+		const ctx          = canvas.getContext('2d');
+		const BLOCK_SIZE   = 20;
+		const PLAYER_DELAY = 100;
+		var enemyCount     = 3;
+		var map;
+		var upPressed      = false;
+		var downPressed    = false;
+		var rightPressed   = false;
+		var leftPressed    = false;
+		var lastMoveTime   = Date.now();
+		var win            = false;
+		var playerIcon     = document.getElementById('playerIcon');
+		var enemyIcon      = document.getElementById('enemyIcon');
+		let enemies        = [];
+
+		let player = new function() {
+			this.size = BLOCK_SIZE;
+			this.x;
+			this.y;
+			this.draw = function(ctx) {ctx.drawImage(playerIcon,this.x*BLOCK_SIZE,this.y*BLOCK_SIZE)};
+			this.move = function(dx,dy) {this.x+=dx; this.y+=dy;};
+		};
+
+		document.getElementById('input').addEventListener('change', function() {
+			var file = this.files[0];
+			var reader = new FileReader();
+			reader.onload = function(e) {
+			 	map = readMap(e.target.result);
+				drawMap();
+				gameLoop();
+			}
+			reader.readAsText(file);
+		}, false);
+
+		function drawMap() {
+			//let x = 0;
+			//let y = 0;
+			for(var i=0; i<map.length;i++) {
+				for(var j=0; j<map[i].length;j++) {
+					if(map[i][j] === 1) {
+						ctx.fillRect(j*BLOCK_SIZE,i*BLOCK_SIZE,BLOCK_SIZE,BLOCK_SIZE);
+					}
+					else if(map[i][j] === 2) {
+						player.x = j;
+						player.y = i;
+					}
+					else if(map[i][j] === 0) {
+						//empty space
+					}
+					else if(map[i][j] === 3) {
+						//enemy
+						enemies.push({
+							size: BLOCK_SIZE,
+							x: j,
+							y: i,
+							alive: true,
+							draw: function(ctx) {ctx.drawImage(enemyIcon,this.x*BLOCK_SIZE,this.y*BLOCK_SIZE)},
+							move: function(dx,dy) {this.x+=dx; this.y+=dy;}
+						})
+					} 
+				}
+			}
+		}
+
+		function getInput() {
+
+			//if all keys were lifted.. reset time so we dont halt movement
+			if(!upPressed&&!downPressed&&!leftPressed&&!rightPressed) {
+				lastMoveTime = 0;
+			}
+			
+			if(enoughTimePassed(lastMoveTime,PLAYER_DELAY)) {
+				
+				let leftOk  = true;
+				let rightOk = true;
+				let upOk    = true;
+				let downOk  = true;
+
+				//validate movement
+				if(map[player.y][player.x+1] === 1) {
+					rightOk = false;
+				}
+				if(map[player.y][player.x-1] === 1) {
+					leftOk = false;
+				}
+				if(map[player.y-1][player.x] === 1) {
+					upOk = false;
+				}
+				if(map[player.y+1][player.x] === 1) {
+					downOk = false;
+				}
+
+
+				if(upPressed && upOk) {
+					player.move(0,-1);
+					lastMoveTime = Date.now();
+				}
+				else if(downPressed && downOk) {
+					player.move(0,1);
+					lastMoveTime = Date.now();
+				}
+				else if(leftPressed && leftOk) {
+					player.move(-1,0);
+					lastMoveTime = Date.now();
+				}
+				else if(rightPressed && rightOk) {
+					player.move(1,0);
+					lastMoveTime = Date.now();
+				}
+			}
+		}
+
+		function gameLoop() {
+			ctx.clearRect(player.x*BLOCK_SIZE,player.y*BLOCK_SIZE,BLOCK_SIZE,BLOCK_SIZE); //only clear player
+			getInput();
+			ctx.fillStyle = '#000000';
+			player.draw(ctx);
+			for (var i = 0; i < enemies.length; i++) {
+				if(enemies[i].alive) {
+					enemies[i].draw(ctx);
+				}
+			}
+			requestAnimationFrame(gameLoop);
+		}
+	</script>
+</body>
+</html>
