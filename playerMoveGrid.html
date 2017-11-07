@@ -22,7 +22,6 @@
 		const ctx          = canvas.getContext('2d');
 		const BLOCK_SIZE   = 20;
 		const PLAYER_DELAY = 100;
-		var enemyCount     = 3;
 		var map;
 		var upPressed      = false;
 		var downPressed    = false;
@@ -32,14 +31,22 @@
 		var win            = false;
 		var playerIcon     = document.getElementById('playerIcon');
 		var enemyIcon      = document.getElementById('enemyIcon');
+		var player;
 		let enemies        = [];
 
-		let player = new function() {
+
+		function Entity(icon,x,y) {
+			this.icon = icon;
 			this.size = BLOCK_SIZE;
-			this.x;
-			this.y;
-			this.draw = function(ctx) {ctx.drawImage(playerIcon,this.x*BLOCK_SIZE,this.y*BLOCK_SIZE)};
-			this.move = function(dx,dy) {this.x+=dx; this.y+=dy;};
+			this.x = x;
+			this.y = y;
+			this.alive = true;
+		};
+
+		Entity.prototype = {
+			//constructor: Entity,
+			draw: function(ctx) {ctx.drawImage(this.icon,this.x*this.size,this.y*this.size)},
+			move: function(dx,dy) {this.x+=dx; this.y+=dy;}
 		};
 
 		document.getElementById('input').addEventListener('change', function() {
@@ -62,22 +69,14 @@
 						ctx.fillRect(j*BLOCK_SIZE,i*BLOCK_SIZE,BLOCK_SIZE,BLOCK_SIZE);
 					}
 					else if(map[i][j] === 2) {
-						player.x = j;
-						player.y = i;
+						player = new Entity(playerIcon,j,i);
 					}
 					else if(map[i][j] === 0) {
 						//empty space
 					}
 					else if(map[i][j] === 3) {
 						//enemy
-						enemies.push({
-							size: BLOCK_SIZE,
-							x: j,
-							y: i,
-							alive: true,
-							draw: function(ctx) {ctx.drawImage(enemyIcon,this.x*BLOCK_SIZE,this.y*BLOCK_SIZE)},
-							move: function(dx,dy) {this.x+=dx; this.y+=dy;}
-						})
+						enemies.push(new Entity(enemyIcon,j,i));
 					} 
 				}
 			}
